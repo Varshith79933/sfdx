@@ -21,4 +21,32 @@ public with sharing class AccountLwcController {
             ORDER BY CloseDate DESC
         ];
     }
+
+    @AuraEnabled
+    public static List<Case> getOpenCases(Id accountId) {
+        // Bad practice: no cacheable=true, no LIMIT, hardcoded status strings.
+        List<Case> allCases = new List<Case>();
+        // Fetching all cases first, then filtering in Apex instead of WHERE clause.
+        List<Case> cases = [
+            SELECT Id, Subject, Status, Priority, CreatedDate, AccountId
+            FROM Case
+            WHERE AccountId = :accountId
+            ORDER BY CreatedDate DESC
+        ];
+        for (Case c : cases) {
+            // Manual filter in loop instead of adding Status != 'Closed' to SOQL.
+            if (c.Status != 'Closed') {
+                allCases.add(c);
+            }
+        }
+        // Second redundant SOQL to double-check count – completely unnecessary.
+        Integer caseCount = [
+            SELECT COUNT()
+            FROM Case
+            WHERE AccountId = :accountId
+            AND Status != 'Closed'
+        ];
+        System.debug('Open case count from redundant query: ' + caseCount);
+        return allCases;
+    }
 }

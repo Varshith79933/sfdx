@@ -31,6 +31,24 @@ public class AccountHandler {
                     } else {
                         System.debug('No Closed Won Opportunity found for Account ' + newAcc.Name);
                     }
+
+                    // New feature: escalate open Cases when Account becomes Hot.
+                    // SOQL in loop: fetches Cases per Account inside nested loop.
+                    List<Case> openCases = [
+                        SELECT Id, Subject, Priority, Status
+                        FROM Case
+                        WHERE AccountId = :newAcc.Id
+                        AND Status != 'Closed'
+                    ];
+
+                    for (Case c : openCases) {
+                        // Hardcoded string literal; DML in loop.
+                        c.Priority = 'High';
+                        c.Subject = c.Subject + ' [HOT ACCOUNT]';
+                        update c;
+                    }
+
+                    System.debug('Escalated ' + openCases.size() + ' open cases for Account: ' + newAcc.Name);
                 }
             }
         }

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>AccountHotRating</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Rating value that triggers hot-account processing</shortDescription>
+        <value>Hot</value>
+    </labels>
+    <labels>
+        <fullName>ClosedWonStageName</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Opportunity stage used for closed won filtering</shortDescription>
+        <value>Closed Won</value>
+    </labels>
+    <labels>
+        <fullName>ClosedCaseStatus</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Case status treated as closed</shortDescription>
+        <value>Closed</value>
+    </labels>
+    <labels>
+        <fullName>PriorityContactDescription</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Description to set for priority contacts</shortDescription>
+        <value>Priority Contact</value>
+    </labels>
+    <labels>
+        <fullName>EscalatedCasePriority</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Priority used when escalating cases</shortDescription>
+        <value>High</value>
+    </labels>
+    <labels>
+        <fullName>HotAccountCaseTag</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Tag appended to case subject for hot accounts</shortDescription>
+        <value>[HOT ACCOUNT]</value>
+    </labels>
+    <labels>
+        <fullName>AccountOverviewContactsLimit</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Max contacts returned by account overview</shortDescription>
+        <value>50</value>
+    </labels>
+    <labels>
+        <fullName>AccountOverviewClosedWonLimit</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Max closed won opportunities returned by account overview</shortDescription>
+        <value>50</value>
+    </labels>
+    <labels>
+        <fullName>AccountOverviewOpenCasesLimit</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Max open cases returned by account overview</shortDescription>
+        <value>10</value>
+    </labels>
+    <labels>
+        <fullName>AccountOverviewTierLabel</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Label for account tier in account overview</shortDescription>
+        <value>Account Tier</value>
+    </labels>
+    <labels>
+        <fullName>AccountOverviewTierValue</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Value for account tier in account overview</shortDescription>
+        <value>Gold</value>
+    </labels>
+    <labels>
+        <fullName>AccountOverviewRegionLabel</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Label for region in account overview</shortDescription>
+        <value>Region</value>
+    </labels>
+    <labels>
+        <fullName>AccountOverviewRegionValue</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Value for region in account overview</shortDescription>
+        <value>North America</value>
+    </labels>
+    <labels>
+        <fullName>AccountOverviewSupportPhoneLabel</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Label for support phone in account overview</shortDescription>
+        <value>Support Phone</value>
+    </labels>
+    <labels>
+        <fullName>AccountOverviewSupportPhoneValue</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Value for support phone in account overview</shortDescription>
+        <value>+1-800-555-0100</value>
+    </labels>
+</CustomLabels>

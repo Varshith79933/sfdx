@@ -1,12 +1,19 @@
 public class AccountHandler {
     public static void processAccounts(List<Account> newAccounts, List<Account> oldAccounts) {
+        String hotRating = System.Label.AccountHotRating;
+        String priorityContactDescription = System.Label.PriorityContactDescription;
+        String closedWonStageName = System.Label.ClosedWonStageName;
+        String closedCaseStatus = System.Label.ClosedCaseStatus;
+        String escalatedCasePriority = System.Label.EscalatedCasePriority;
+        String hotAccountCaseTag = System.Label.HotAccountCaseTag;
+
         Map<Id, Account> oldAccountsById = new Map<Id, Account>(oldAccounts);
         Set<Id> hotAccountIds = new Set<Id>();
         Map<Id, String> hotAccountNamesById = new Map<Id, String>();
 
         for (Account newAcc : newAccounts) {
             Account oldAcc = oldAccountsById.get(newAcc.Id);
-            if (oldAcc != null && oldAcc.Rating != 'Hot' && newAcc.Rating == 'Hot') {
+            if (oldAcc != null && oldAcc.Rating != hotRating && newAcc.Rating == hotRating) {
                 hotAccountIds.add(newAcc.Id);
                 hotAccountNamesById.put(newAcc.Id, newAcc.Name);
             }
@@ -20,10 +27,10 @@ public class AccountHandler {
             SELECT Id, Description
             FROM Contact
             WHERE AccountId IN :hotAccountIds
-            AND (Description = null OR Description != 'Priority Contact')
+            AND (Description = null OR Description != :priorityContactDescription)
         ];
         for (Contact contactRecord : contactsToUpdate) {
-            contactRecord.Description = 'Priority Contact';
+            contactRecord.Description = priorityContactDescription;
         }
         if (!contactsToUpdate.isEmpty()) {
             update contactsToUpdate;
@@ -34,7 +41,7 @@ public class AccountHandler {
             SELECT Id, Name, CloseDate, Amount, AccountId
             FROM Opportunity
             WHERE AccountId IN :hotAccountIds
-            AND StageName = 'Closed Won'
+            AND StageName = :closedWonStageName
             ORDER BY AccountId, CloseDate DESC
         ]) {
             if (!latestClosedWonByAccountId.containsKey(opportunityRecord.AccountId)) {
@@ -48,21 +55,21 @@ public class AccountHandler {
             SELECT Id, Subject, Priority, Status, AccountId
             FROM Case
             WHERE AccountId IN :hotAccountIds
-            AND Status != 'Closed'
-            AND (Priority != 'High' OR Subject = null OR Subject NOT LIKE '%[HOT ACCOUNT]%')
+            AND Status != :closedCaseStatus
+            AND (Priority != :escalatedCasePriority OR Subject = null OR Subject NOT LIKE :('%' + hotAccountCaseTag + '%'))
         ]) {
             Boolean shouldUpdate = false;
 
-            if (caseRecord.Priority != 'High') {
-                caseRecord.Priority = 'High';
+            if (caseRecord.Priority != escalatedCasePriority) {
+                caseRecord.Priority = escalatedCasePriority;
                 shouldUpdate = true;
             }
 
             if (String.isBlank(caseRecord.Subject)) {
-                caseRecord.Subject = '[HOT ACCOUNT]';
+                caseRecord.Subject = hotAccountCaseTag;
                 shouldUpdate = true;
-            } else if (!caseRecord.Subject.contains('[HOT ACCOUNT]')) {
-                caseRecord.Subject += ' [HOT ACCOUNT]';
+            } else if (!caseRecord.Subject.contains(hotAccountCaseTag)) {
+                caseRecord.Subject += ' ' + hotAccountCaseTag;
                 shouldUpdate = true;
             }
 

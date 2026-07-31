@@ -2,8 +2,23 @@ import { LightningElement, api, track } from 'lwc';
 import getContactsByAccount from '@salesforce/apex/AccountLwcController.getContactsByAccount';
 import getClosedWonOpportunities from '@salesforce/apex/AccountLwcController.getClosedWonOpportunities';
 import getOpenCases from '@salesforce/apex/AccountLwcController.getOpenCases';
+import accountTierLabel from '@salesforce/label/c.AccountOverviewTierLabel';
+import accountTierValue from '@salesforce/label/c.AccountOverviewTierValue';
+import regionLabel from '@salesforce/label/c.AccountOverviewRegionLabel';
+import regionValue from '@salesforce/label/c.AccountOverviewRegionValue';
+import supportPhoneLabel from '@salesforce/label/c.AccountOverviewSupportPhoneLabel';
+import supportPhoneValue from '@salesforce/label/c.AccountOverviewSupportPhoneValue';
 
 export default class AccountOverview extends LightningElement {
+    labels = {
+        accountTierLabel,
+        accountTierValue,
+        regionLabel,
+        regionValue,
+        supportPhoneLabel,
+        supportPhoneValue
+    };
+
     @api recordId;
     @track contacts = [];
     @track opportunities = [];

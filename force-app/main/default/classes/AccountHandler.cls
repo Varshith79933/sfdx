@@ -20,6 +20,7 @@ public class AccountHandler {
             SELECT Id, Description
             FROM Contact
             WHERE AccountId IN :hotAccountIds
+            AND (Description = null OR Description != 'Priority Contact')
         ];
         for (Contact contactRecord : contactsToUpdate) {
             contactRecord.Description = 'Priority Contact';
@@ -48,13 +49,27 @@ public class AccountHandler {
             FROM Case
             WHERE AccountId IN :hotAccountIds
             AND Status != 'Closed'
+            AND (Priority != 'High' OR Subject = null OR Subject NOT LIKE '%[HOT ACCOUNT]%')
         ]) {
-            caseRecord.Priority = 'High';
+            Boolean shouldUpdate = false;
+
+            if (caseRecord.Priority != 'High') {
+                caseRecord.Priority = 'High';
+                shouldUpdate = true;
+            }
+
             if (String.isBlank(caseRecord.Subject)) {
                 caseRecord.Subject = '[HOT ACCOUNT]';
+                shouldUpdate = true;
             } else if (!caseRecord.Subject.contains('[HOT ACCOUNT]')) {
                 caseRecord.Subject += ' [HOT ACCOUNT]';
+                shouldUpdate = true;
             }
+
+            if (!shouldUpdate) {
+                continue;
+            }
+
             casesToUpdate.add(caseRecord);
             Integer existingCount = escalatedCaseCountByAccountId.get(caseRecord.AccountId);
             escalatedCaseCountByAccountId.put(caseRecord.AccountId, existingCount == null ? 1 : existingCount + 1);

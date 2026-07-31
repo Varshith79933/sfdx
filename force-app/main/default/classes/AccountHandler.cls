@@ -6,6 +6,9 @@ public class AccountHandler {
         String closedCaseStatus = System.Label.ClosedCaseStatus;
         String escalatedCasePriority = System.Label.EscalatedCasePriority;
         String hotAccountCaseTag = System.Label.HotAccountCaseTag;
+        String latestClosedWonMessageTemplate = System.Label.AccountHandlerLatestClosedWonMessage;
+        String noClosedWonMessageTemplate = System.Label.AccountHandlerNoClosedWonMessage;
+        String escalatedCasesMessageTemplate = System.Label.AccountHandlerEscalatedCasesMessage;
 
         Map<Id, Account> oldAccountsById = new Map<Id, Account>(oldAccounts);
         Set<Id> hotAccountIds = new Set<Id>();
@@ -89,13 +92,14 @@ public class AccountHandler {
             Opportunity latestClosedWon = latestClosedWonByAccountId.get(accountId);
             String accountName = hotAccountNamesById.get(accountId);
             if (latestClosedWon != null) {
-                System.debug('Latest Closed Won Opportunity for Account ' + accountName + ': ' + latestClosedWon.Name);
+                System.debug(String.format(latestClosedWonMessageTemplate, new List<String>{ accountName, latestClosedWon.Name }));
             } else {
-                System.debug('No Closed Won Opportunity found for Account ' + accountName);
+                System.debug(String.format(noClosedWonMessageTemplate, new List<String>{ accountName }));
             }
 
             Integer escalatedCaseCount = escalatedCaseCountByAccountId.get(accountId);
-            System.debug('Escalated ' + (escalatedCaseCount == null ? 0 : escalatedCaseCount) + ' open cases for Account: ' + accountName);
+            String escalatedCount = String.valueOf(escalatedCaseCount == null ? 0 : escalatedCaseCount);
+            System.debug(String.format(escalatedCasesMessageTemplate, new List<String>{ escalatedCount, accountName }));
         }
     }
 }

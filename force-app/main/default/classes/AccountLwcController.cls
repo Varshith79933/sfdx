@@ -1,17 +1,17 @@
 public with sharing class AccountLwcController {
-    private static Integer getConfiguredLimit(String rawLimitValue, Integer fallbackLimit) {
-        try {
-            Integer parsedLimit = Integer.valueOf(rawLimitValue);
-            return parsedLimit > 0 ? parsedLimit : fallbackLimit;
-        } catch (Exception ex) {
-            return fallbackLimit;
+    private static Integer getConfiguredLimit(String rawLimitValue) {
+        Integer parsedLimit = Integer.valueOf(rawLimitValue);
+        Integer minimumLimit = Integer.valueOf(System.Label.AccountOverviewMinimumLimit);
+        if (parsedLimit < minimumLimit) {
+            throw new AuraHandledException(System.Label.AccountOverviewInvalidLimitMessage);
         }
+        return parsedLimit;
     }
 
     @AuraEnabled(cacheable=true)
     public static List<Contact> getContactsByAccount(Id accountId) {
         // Capped list to keep payload size predictable for the overview UI.
-        Integer contactsLimit = getConfiguredLimit(System.Label.AccountOverviewContactsLimit, 50);
+        Integer contactsLimit = getConfiguredLimit(System.Label.AccountOverviewContactsLimit);
         return [
             SELECT Id, Name, Email, Phone, Description, AccountId
             FROM Contact
@@ -24,7 +24,7 @@ public with sharing class AccountLwcController {
     @AuraEnabled(cacheable=true)
     public static List<Opportunity> getClosedWonOpportunities(Id accountId) {
         // Capped list to keep payload size predictable for the overview UI.
-        Integer closedWonLimit = getConfiguredLimit(System.Label.AccountOverviewClosedWonLimit, 50);
+        Integer closedWonLimit = getConfiguredLimit(System.Label.AccountOverviewClosedWonLimit);
         String closedWonStageName = System.Label.ClosedWonStageName;
         return [
             SELECT Id, Name, StageName, Amount, CloseDate, AccountId
@@ -38,7 +38,7 @@ public with sharing class AccountLwcController {
 
     @AuraEnabled(cacheable=true)
     public static List<Case> getOpenCases(Id accountId) {
-        Integer openCasesLimit = getConfiguredLimit(System.Label.AccountOverviewOpenCasesLimit, 10);
+        Integer openCasesLimit = getConfiguredLimit(System.Label.AccountOverviewOpenCasesLimit);
         String closedCaseStatus = System.Label.ClosedCaseStatus;
         return [
             SELECT Id, Subject, Status, Priority, CreatedDate, AccountId

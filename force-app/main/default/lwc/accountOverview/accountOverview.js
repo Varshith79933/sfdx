@@ -8,6 +8,11 @@ import regionLabel from '@salesforce/label/c.AccountOverviewRegionLabel';
 import regionValue from '@salesforce/label/c.AccountOverviewRegionValue';
 import supportPhoneLabel from '@salesforce/label/c.AccountOverviewSupportPhoneLabel';
 import supportPhoneValue from '@salesforce/label/c.AccountOverviewSupportPhoneValue';
+import cardTitle from '@salesforce/label/c.AccountOverviewCardTitle';
+import refreshLabel from '@salesforce/label/c.AccountOverviewRefreshLabel';
+import contactsHeader from '@salesforce/label/c.AccountOverviewContactsHeader';
+import closedWonHeader from '@salesforce/label/c.AccountOverviewClosedWonHeader';
+import openCasesHeader from '@salesforce/label/c.AccountOverviewOpenCasesHeader';
 
 export default class AccountOverview extends LightningElement {
     labels = {
@@ -16,7 +21,12 @@ export default class AccountOverview extends LightningElement {
         regionLabel,
         regionValue,
         supportPhoneLabel,
-        supportPhoneValue
+        supportPhoneValue,
+        cardTitle,
+        refreshLabel,
+        contactsHeader,
+        closedWonHeader,
+        openCasesHeader
     };
 
     @api recordId;

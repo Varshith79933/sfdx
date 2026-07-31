@@ -120,4 +120,84 @@
         <shortDescription>Value for support phone in account overview</shortDescription>
         <value>+1-800-555-0100</value>
     </labels>
+    <labels>
+        <fullName>AccountOverviewCardTitle</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Card title shown in account overview</shortDescription>
+        <value>Account Overview</value>
+    </labels>
+    <labels>
+        <fullName>AccountOverviewRefreshLabel</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Refresh button label in account overview</shortDescription>
+        <value>Refresh</value>
+    </labels>
+    <labels>
+        <fullName>AccountOverviewContactsHeader</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Contacts section header in account overview</shortDescription>
+        <value>Contacts</value>
+    </labels>
+    <labels>
+        <fullName>AccountOverviewClosedWonHeader</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Closed won opportunities header in account overview</shortDescription>
+        <value>Closed Won Opportunities</value>
+    </labels>
+    <labels>
+        <fullName>AccountOverviewOpenCasesHeader</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Open cases header in account overview</shortDescription>
+        <value>Open Cases</value>
+    </labels>
+    <labels>
+        <fullName>AccountHandlerLatestClosedWonMessage</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Debug template for latest closed won opportunity</shortDescription>
+        <value>Latest Closed Won Opportunity for Account {0}: {1}</value>
+    </labels>
+    <labels>
+        <fullName>AccountHandlerNoClosedWonMessage</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Debug template when no closed won opportunity is found</shortDescription>
+        <value>No Closed Won Opportunity found for Account {0}</value>
+    </labels>
+    <labels>
+        <fullName>AccountHandlerEscalatedCasesMessage</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Debug template for escalated case count</shortDescription>
+        <value>Escalated {0} open cases for Account: {1}</value>
+    </labels>
+    <labels>
+        <fullName>AccountOverviewMinimumLimit</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Minimum allowed query limit for account overview lists</shortDescription>
+        <value>1</value>
+    </labels>
+    <labels>
+        <fullName>AccountOverviewInvalidLimitMessage</fullName>
+        <categories>AccountOverview</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Error shown when configured list limits are invalid</shortDescription>
+        <value>Configured limit must be greater than zero.</value>
+    </labels>
 </CustomLabels>

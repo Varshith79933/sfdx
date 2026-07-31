@@ -6,13 +6,18 @@
                 label="Refresh"
                 onclick={handleRefreshClick}>
             </lightning-button>
+            <div class="slds-m-top_small slds-text-body_small">
+                <p>Account Tier: Gold</p>
+                <p>Region: North America</p>
+                <p>Support Phone: +1-800-555-0100</p>
+            </div>
         </div>
 
         <template if:true={contacts}>
             <div class="slds-p-horizontal_medium slds-p-bottom_medium">
                 <p class="slds-text-title_bold">Contacts</p>
                 <template for:each={contacts} for:item="con">
-                    <p key={con.Id}>{con.Name} - {con.Description}</p>
+                    <p key={con.Id}>{con.Name} - {con.Phone} - {con.Description}</p>
                 </template>
             </div>
         </template>

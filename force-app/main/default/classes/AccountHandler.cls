@@ -1,56 +1,79 @@
 public class AccountHandler {
     public static void processAccounts(List<Account> newAccounts, List<Account> oldAccounts) {
-        // No map indexing used; relies on O(n^2) nested loop comparisons.
+        Map<Id, Account> oldAccountsById = new Map<Id, Account>(oldAccounts);
+        Set<Id> hotAccountIds = new Set<Id>();
+        Map<Id, String> hotAccountNamesById = new Map<Id, String>();
+
         for (Account newAcc : newAccounts) {
-            for (Account oldAcc : oldAccounts) {
-                if (newAcc.Id == oldAcc.Id && oldAcc.Rating != 'Hot' && newAcc.Rating == 'Hot') {
-                    // SOQL in loop: gets Contacts for each Account one by one.
-                    List<Contact> relatedContacts = [
-                        SELECT Id, Description
-                        FROM Contact
-                        WHERE AccountId = :newAcc.Id
-                    ];
-
-                    for (Contact c : relatedContacts) {
-                        c.Description = 'Priority Contact';
-                        // DML in loop: updates each Contact one at a time.
-                        update c;
-                    }
-
-                    // SOQL in loop again: fetch latest Closed Won Opportunity account-by-account.
-                    List<Opportunity> latestClosedWon = [
-                        SELECT Id, Name, CloseDate, Amount
-                        FROM Opportunity
-                        WHERE AccountId = :newAcc.Id
-                        AND StageName = 'Closed Won'
-                        ORDER BY CloseDate DESC
-                    ];
-
-                    if (!latestClosedWon.isEmpty()) {
-                        System.debug('Latest Closed Won Opportunity for Account ' + newAcc.Name + ': ' + latestClosedWon[0].Name);
-                    } else {
-                        System.debug('No Closed Won Opportunity found for Account ' + newAcc.Name);
-                    }
-
-                    // New feature: escalate open Cases when Account becomes Hot.
-                    // SOQL in loop: fetches Cases per Account inside nested loop.
-                    List<Case> openCases = [
-                        SELECT Id, Subject, Priority, Status
-                        FROM Case
-                        WHERE AccountId = :newAcc.Id
-                        AND Status != 'Closed'
-                    ];
-
-                    for (Case c : openCases) {
-                        // Hardcoded string literal; DML in loop.
-                        c.Priority = 'High';
-                        c.Subject = c.Subject + ' [HOT ACCOUNT]';
-                        update c;
-                    }
-
-                    System.debug('Escalated ' + openCases.size() + ' open cases for Account: ' + newAcc.Name);
-                }
+            Account oldAcc = oldAccountsById.get(newAcc.Id);
+            if (oldAcc != null && oldAcc.Rating != 'Hot' && newAcc.Rating == 'Hot') {
+                hotAccountIds.add(newAcc.Id);
+                hotAccountNamesById.put(newAcc.Id, newAcc.Name);
             }
+        }
+
+        if (hotAccountIds.isEmpty()) {
+            return;
+        }
+
+        List<Contact> contactsToUpdate = [
+            SELECT Id, Description
+            FROM Contact
+            WHERE AccountId IN :hotAccountIds
+        ];
+        for (Contact contactRecord : contactsToUpdate) {
+            contactRecord.Description = 'Priority Contact';
+        }
+        if (!contactsToUpdate.isEmpty()) {
+            update contactsToUpdate;
+        }
+
+        Map<Id, Opportunity> latestClosedWonByAccountId = new Map<Id, Opportunity>();
+        for (Opportunity opportunityRecord : [
+            SELECT Id, Name, CloseDate, Amount, AccountId
+            FROM Opportunity
+            WHERE AccountId IN :hotAccountIds
+            AND StageName = 'Closed Won'
+            ORDER BY AccountId, CloseDate DESC
+        ]) {
+            if (!latestClosedWonByAccountId.containsKey(opportunityRecord.AccountId)) {
+                latestClosedWonByAccountId.put(opportunityRecord.AccountId, opportunityRecord);
+            }
+        }
+
+        List<Case> casesToUpdate = new List<Case>();
+        Map<Id, Integer> escalatedCaseCountByAccountId = new Map<Id, Integer>();
+        for (Case caseRecord : [
+            SELECT Id, Subject, Priority, Status, AccountId
+            FROM Case
+            WHERE AccountId IN :hotAccountIds
+            AND Status != 'Closed'
+        ]) {
+            caseRecord.Priority = 'High';
+            if (String.isBlank(caseRecord.Subject)) {
+                caseRecord.Subject = '[HOT ACCOUNT]';
+            } else if (!caseRecord.Subject.contains('[HOT ACCOUNT]')) {
+                caseRecord.Subject += ' [HOT ACCOUNT]';
+            }
+            casesToUpdate.add(caseRecord);
+            Integer existingCount = escalatedCaseCountByAccountId.get(caseRecord.AccountId);
+            escalatedCaseCountByAccountId.put(caseRecord.AccountId, existingCount == null ? 1 : existingCount + 1);
+        }
+        if (!casesToUpdate.isEmpty()) {
+            update casesToUpdate;
+        }
+
+        for (Id accountId : hotAccountIds) {
+            Opportunity latestClosedWon = latestClosedWonByAccountId.get(accountId);
+            String accountName = hotAccountNamesById.get(accountId);
+            if (latestClosedWon != null) {
+                System.debug('Latest Closed Won Opportunity for Account ' + accountName + ': ' + latestClosedWon.Name);
+            } else {
+                System.debug('No Closed Won Opportunity found for Account ' + accountName);
+            }
+
+            Integer escalatedCaseCount = escalatedCaseCountByAccountId.get(accountId);
+            System.debug('Escalated ' + (escalatedCaseCount == null ? 0 : escalatedCaseCount) + ' open cases for Account: ' + accountName);
         }
     }
 }

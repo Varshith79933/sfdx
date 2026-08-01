@@ -25,7 +25,7 @@ hello this is varshith
         if (hotAccountIds.isEmpty()) {
             return;
         }
-
++1 5152364132
         List<Contact> contactsToUpdate = [
             SELECT Id, Description
             FROM Contact
